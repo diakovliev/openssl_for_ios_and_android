@@ -17,6 +17,8 @@
 # # read -n1 -p "Press any key to continue..."
 
 set -u
+set -e
+set -x
 
 source ./build-android-common.sh
 
@@ -87,7 +89,7 @@ function configure_make() {
     NGHTTP2_OUT_DIR="${pwd_path}/../output/android/nghttp2-${ABI}"
 
     export LDFLAGS="${LDFLAGS} -L${OPENSSL_OUT_DIR}/lib -L${NGHTTP2_OUT_DIR}/lib"
-    # export LDFLAGS="-Wl,-rpath-link,-L${NGHTTP2_OUT_DIR}/lib,-L${OPENSSL_OUT_DIR}/lib $LDFLAGS "
+    # export LDFLAGS="-Wl,-rpath-link=${NGHTTP2_OUT_DIR}/lib,-rpath-link=-L${OPENSSL_OUT_DIR}/lib $LDFLAGS "
 
     android_printf_global_params "$ARCH" "$ABI" "$ABI_TRIPLE" "$PREFIX_DIR" "$OUTPUT_ROOT"
 
@@ -105,8 +107,7 @@ function configure_make() {
 
     elif [[ "${ARCH}" == "arm64" ]]; then
 
-        # --enable-shared need nghttp2 cpp compile
-        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --disable-shared --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        ./configure --host=$(android_get_build_host "${ARCH}") --prefix="${PREFIX_DIR}" --enable-ipv6 --with-ssl=${OPENSSL_OUT_DIR} --with-nghttp2=${NGHTTP2_OUT_DIR} >"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
 
     else
         log_error "not support" && exit 1

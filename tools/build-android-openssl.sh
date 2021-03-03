@@ -109,9 +109,9 @@ function configure_make() {
     log_info "make $ABI start..."
 
     make clean >"${OUTPUT_ROOT}/log/${ABI}.log"
-    if make -j$(get_cpu_count) >>"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1; then
-        make install_sw >>"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
-        make install_ssldirs >>"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+    if make SHLIB_VERSION_NUMBER= SHLIB_EXT=.so -j$(get_cpu_count) >>"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1; then
+        make SHLIB_VERSION_NUMBER= SHLIB_EXT=.so install_sw >>"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
+        make SHLIB_VERSION_NUMBER= SHLIB_EXT=.so install_ssldirs >>"${OUTPUT_ROOT}/log/${ABI}.log" 2>&1
     fi
 
     popd
